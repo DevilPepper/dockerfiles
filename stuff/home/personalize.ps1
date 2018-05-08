@@ -14,5 +14,5 @@ else{
 
 	(Get-Content Dockerfile.copy).replace('#user', $user).replace('#base_image', $base_image) | Set-Content Dockerfile
 	docker build . -t $new_image
-	rm Dockfile
+	rm Dockerfile
 }
