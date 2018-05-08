@@ -1,0 +1,14 @@
+FROM #user/home as home
+
+FROM #base_image
+
+COPY --from=home /etc /stuff
+RUN tail -1 /stuff/group >> /etc/group \
+ && tail -1 /stuff/passwd >> /etc/passwd \
+ && tail -1 /stuff/shadow >> /etc/shadow \
+ && rm -rf /stuff
+
+USER #user
+COPY --from=home --chown=#user /home/#user /home/#user
+WORKDIR /home/#user
+RUN docker-finish || true

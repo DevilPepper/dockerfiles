@@ -1,0 +1,4 @@
+#!/bin/sh
+
+npm config set prefix ~/.npm
+export PATH=~/.npm/bin:$PATH

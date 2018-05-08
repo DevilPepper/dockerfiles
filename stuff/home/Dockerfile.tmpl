@@ -1,0 +1,16 @@
+FROM alpine as build-stage
+
+RUN apk add --no-cache git stow \
+ && adduser -D -u #uid #user
+
+USER #user
+WORKDIR /home/#user
+
+RUN git clone --depth 1 #dotfiles \
+ && mkdir code dependencies \
+ && cd dotfiles \
+ && stow *
+
+FROM alpine
+COPY --from=build-stage /etc /etc
+COPY --from=build-stage /home /home
