@@ -9,6 +9,7 @@ $dotfiles = "https://github.com/SupaStuff/dotfiles.git --branch dev"
 
 if($user) {
 	$usr = $user
+	echo $user > .username
 }
 else {
 	echo "User name not provided. Using $usr. If you don't want this, use --user or -u."
