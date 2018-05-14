@@ -9,7 +9,7 @@ $dotfiles = "https://github.com/SupaStuff/dotfiles.git --branch dev"
 
 if($user) {
 	$usr = $user
-	echo $user > .username
+	echo $user > ~\dockerfiles\tmp\username
 }
 else {
 	echo "User name not provided. Using $usr. If you don't want this, use --user or -u."
@@ -27,10 +27,13 @@ if($docker_user) {
 	$uid=$docker_user
 }
 
-(Get-Content Dockerfile.tmpl).replace('#user', $usr).replace('#dotfiles', $dotfiles).replace('#uid', $uid) | Set-Content Dockerfile
+$this_dir = $pwd.path
+cd $PSScriptRoot
 
-echo $uid #`n`n
+(Get-Content Dockerfile.tmpl).replace('#user', $usr).replace('#dotfiles', $dotfiles).replace('#uid', $uid) | Set-Content Dockerfile
 
 docker build . -t $usr/home
 
 rm Dockerfile
+
+cd $this_dir
