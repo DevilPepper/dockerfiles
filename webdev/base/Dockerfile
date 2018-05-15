@@ -10,6 +10,7 @@ RUN npm install -g @angular/cli \
                    create-react-app
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
+								apt-transport-https \
 								git \
 								vim \
  && rm -rf /var/lib/apt/lists/* /tmp/*.deb
