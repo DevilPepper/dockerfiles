@@ -1,4 +1,4 @@
-FROM node:10.1.0-slim
+FROM node:9.11.1-slim
 
 COPY docker-finish /usr/local/bin
 
@@ -12,6 +12,7 @@ RUN npm install -g @angular/cli \
 RUN apt-get update && apt-get install -y --no-install-recommends \
 								apt-transport-https \
 								git \
+								tzdata \
 								vim \
  && rm -rf /var/lib/apt/lists/* /tmp/*.deb
 

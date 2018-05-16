@@ -1,4 +1,4 @@
-FROM node:10.1.0-alpine
+FROM node:9.11.1-alpine
 
 COPY docker-finish /usr/local/bin
 
@@ -9,7 +9,11 @@ EXPOSE 80
 RUN npm install -g @angular/cli \
 		   create-react-app 
 
-RUN apk add --no-cache bash git vim \
+RUN apk add --no-cache \
+			bash \
+			git \
+			tzdata \
+			vim \
  && rm -rf /var/cache/apk/*
 
 CMD ["bash"]
