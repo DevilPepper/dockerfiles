@@ -1,4 +1,4 @@
-FROM node:9.11.1-alpine
+FROM node:10.1.0-alpine
 
 COPY docker-finish /usr/local/bin
 
@@ -12,6 +12,7 @@ RUN npm install -g @angular/cli \
 RUN apk add --no-cache \
 			bash \
 			git \
+			less \
 			tzdata \
 			vim \
  && rm -rf /var/cache/apk/*
