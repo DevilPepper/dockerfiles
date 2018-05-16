@@ -1,6 +1,8 @@
 $DISPLAY = $((Get-NetIPConfiguration | Where-Object { $_.IPv4DefaultGateway -ne $null -and $_.NetAdapter.Status -ne "Disconnected" }).IPv4Address.IPAddress)
 $DISPLAY += ":0.0"
 
+$user = $(. $PSScriptRoot\docker-user.ps1)
+
 if($args.length -eq 0) {
 	echo "Usage: docker-run-gui.ps1 IMAGE_NAME [extra docker run args]"
 }
@@ -15,8 +17,10 @@ else {
 	docker run -it --rm `
 		--name $img `
 		--hostname $img `
+		-e TZ=$TZ `
 		-e DISPLAY=$DISPLAY `
 		-v code:/home/$user/code `
+		-v dotfiles:/home/$user/dotfiles `
 		-p 8080:80 `
 		-p 3000:3000 `
 		-p 4200:4200 `
