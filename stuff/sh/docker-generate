@@ -1,9 +1,9 @@
 #!/bin/bash
-cd ${0%/*}/../home
+cd ${0%/*}/../templates
 
 dotfiles='https://github.com/SupaStuff/dotfiles.git --branch dev'
 
-cat Dockerfile.tmpl \
+cat generate.tmpl \
   | sed -e "s|#uid|$UID|g" \
   | sed -e "s|#user|$USER|g" \
   | sed -e "s|#dotfiles|$dotfiles|g" \

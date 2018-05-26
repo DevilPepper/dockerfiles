@@ -1,5 +1,5 @@
 #!/bin/bash
-cd ${0%/*}/../home
+cd ${0%/*}/../templates
 
 if [ $# -eq 0 ]; then
 	echo "USAGE: docker-personalize BASE_IMAGE"
@@ -9,7 +9,7 @@ else
 	base_image=$1
     new_image=$(echo $base_image | sed -e "s|^.*/|$USER/|")
 
-	cat Dockerfile.copy \
+	cat personalize.tmpl \
   	  | sed -e "s|#user|$USER|g" \
   	  | sed -e "s|#base_image|$base_image|g" \
   	  > Dockerfile 

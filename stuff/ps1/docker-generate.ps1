@@ -28,9 +28,9 @@ if($docker_user) {
 }
 
 $this_dir = $pwd.path
-cd $PSScriptRoot
+cd $PSScriptRoot\..\templates
 
-(Get-Content Dockerfile.tmpl).replace('#user', $usr).replace('#dotfiles', $dotfiles).replace('#uid', $uid) | Set-Content Dockerfile
+(Get-Content generate.tmpl).replace('#user', $usr).replace('#dotfiles', $dotfiles).replace('#uid', $uid) | Set-Content Dockerfile
 
 docker build . -t $usr/home --no-cache
 

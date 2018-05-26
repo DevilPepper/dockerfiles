@@ -16,8 +16,8 @@ else{
 
 	$this_dir = $pwd.path
 
-	cd $PSScriptRoot\..\home
-	(Get-Content Dockerfile.copy).replace('#user', $user).replace('#base_image', $base_image) | Set-Content Dockerfile
+	cd $PSScriptRoot\..\templates
+	(Get-Content personalize.tmpl).replace('#user', $user).replace('#base_image', $base_image) | Set-Content Dockerfile
 	docker build . -t $new_image
 	rm Dockerfile
 
