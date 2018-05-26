@@ -1,0 +1,28 @@
+theDir=$PWD
+this_dir=${theDir##*/}
+theDir=${theDir%/*}
+parent_dir=${theDir##*/}
+theDir=${theDir%/*}
+parent_parent_dir=${theDir##*/}
+
+repo=
+
+if [ "$parent_parent_dir" == "dockerfiles" ]; then
+    repo="supastuff/$parent_dir:$this_dir"
+elif [ "$parent_dir" == "dockerfiles" ]; then
+    repo="supastuff/$this_dir"
+else
+	echo "this isn't one of your normal dockerfiles"
+    echo "$parent_parent_dir/$parent_dir/$this_dir"
+fi
+
+if [ $# -ne 0 ]; then
+    repo=$(echo $repo | sed -e "s/:.*/:$1/g)
+fi
+
+if [ -z "$repo" ]; then
+    echo $repo
+	cp ../docker-finish . || true
+	docker build -t $repo .
+	rm docker-finish || true
+fi
