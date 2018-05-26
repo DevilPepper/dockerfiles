@@ -1,0 +1,25 @@
+#!/bin/bash
+
+if [ $# -eq 0 ]; then
+	echo "Usage: docker-run IMAGE_NAME [extra docker run args]"
+else
+    image=$1
+    shift
+
+    img=$(echo $image | sed -e "s/^.*\///" | sed -e "s/:/-/g")
+
+	docker run -it --rm \
+		--name $img \
+		--hostname $img \
+		-e DISPLAY=$DISPLAY \
+		-e TZ=$TZ \
+		-e XAUTHORITY=$XAUTHORITY \
+		-v ~/code:/home/$USER/code \
+		-v ~/dotfiles:/home/$USER/dotfiles \
+        -v /tmp/.X11-unix:/tmp/.X11-unix \
+        -v $XAUTHORITY:$XAUTHORITY \
+		-p 8080:80 \
+		-p 3000:3000 \
+		-p 4200:4200 \
+		"$@" $image
+fi
