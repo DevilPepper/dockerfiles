@@ -1,0 +1,14 @@
+#!/bin/bash
+cd ${0%/*}/../home
+
+dotfiles="https://github.com/SupaStuff/dotfiles.git --branch dev"
+
+cat Dockerfile.tmpl \
+  | sed -e "s/#uid/$UID/g" \
+  | sed -e "s/#user/$USER/g" \
+  | sed -e "s/#dotfiles/$dotfiles/g" \
+  > Dockerfile
+
+docker build . -t $USER/home --no-cache
+
+rm Dockerfile
