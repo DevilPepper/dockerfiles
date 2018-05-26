@@ -32,7 +32,7 @@ cd $PSScriptRoot
 
 (Get-Content Dockerfile.tmpl).replace('#user', $usr).replace('#dotfiles', $dotfiles).replace('#uid', $uid) | Set-Content Dockerfile
 
-docker build . -t $usr/home
+docker build . -t $usr/home --no-cache
 
 rm Dockerfile
 
