@@ -6,7 +6,7 @@ else
     image=$1
     shift
 
-    img=$(echo $image | sed -e "s/^.*\///" | sed -e "s/:/-/g")
+    img=$(echo $image | sed -e "s|^.*/||" | sed -e "s|:|-|g")
 
 	docker run -it --rm \
 		--name $img \

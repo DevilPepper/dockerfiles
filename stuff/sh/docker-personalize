@@ -1,17 +1,17 @@
 #!/bin/bash
 cd ${0%/*}/../home
 
-if [$# -eq 0]; then
+if [ $# -eq 0 ]; then
 	echo "USAGE: docker-personalize BASE_IMAGE"
 	echo "This script will attempt to copy from the image $USER/home"
 	echo "If the image doesn't exist, run ${0%/*}/docker-generate"
 else
 	base_image=$1
-    new_image=$(echo $base_image | sed -e "s/^.*\//$USER\//g")
+    new_image=$(echo $base_image | sed -e "s|^.*/|$USER/|")
 
 	cat Dockerfile.copy \
-  	  | sed -e "s/#user/$USER/g" \
-  	  | sed -e "s/#base_image/$base_image/g" \
+  	  | sed -e "s|#user|$USER|g" \
+  	  | sed -e "s|#base_image|$base_image|g" \
   	  > Dockerfile 
 
 	docker build . -t $new_image

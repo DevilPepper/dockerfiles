@@ -1,3 +1,5 @@
+#!/bin/bash
+
 theDir=$PWD
 this_dir=${theDir##*/}
 theDir=${theDir%/*}
@@ -17,10 +19,12 @@ else
 fi
 
 if [ $# -ne 0 ]; then
-    repo=$(echo $repo | sed -e "s/:.*/:$1/g)
+    # Add a colon to the end in case there isn't already one
+    repo="$repo:"
+    repo=$(echo $repo | sed -e "s|:.*|:$1|")
 fi
 
-if [ -z "$repo" ]; then
+if [ -n "$repo" ]; then
     echo $repo
 	cp ../docker-finish . || true
 	docker build -t $repo .
