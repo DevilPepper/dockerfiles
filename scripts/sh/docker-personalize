@@ -8,6 +8,9 @@ if [ $# -eq 0 ]; then
 else
 	base_image=$1
     new_image=$(echo $base_image | sed -e "s|^.*/|$USER/|")
+    if [[ ! "$new_image" =~ ^$USER/ ]]; then
+        new_image=$USER/$new_image
+    fi
 
 	cat personalize.tmpl \
   	  | sed -e "s|#user|$USER|g" \

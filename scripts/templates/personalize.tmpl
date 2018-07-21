@@ -2,6 +2,8 @@ FROM #user/home as home
 
 FROM #base_image
 
+USER root
+
 COPY --from=home /etc /stuff
 RUN tail -1 /stuff/group >> /etc/group \
  && tail -1 /stuff/passwd >> /etc/passwd \
