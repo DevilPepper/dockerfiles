@@ -1,7 +1,56 @@
 FROM ubuntu
-RUN apt-get -qq update && apt-get -qq install -y \
-    git imagemagick curl gconf-service lib32gcc1 lib32stdc++6 libasound2 libc6 libc6-i386 libcairo2 libcap2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libfreetype6 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libgl1-mesa-glx libglib2.0-0 libglu1-mesa libgtk2.0-0 libnspr4 libnss3 libpango1.0-0 libstdc++6 libx11-6 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxtst6 zlib1g debconf npm xdg-utils lsb-release libpq5 xvfb libsoup2.4-1 libarchive13 libpng-dev python-pip python3-venv python3-pip \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt-get -qq update \
+ && apt-get -qq install -y curl \
+                           debconf \
+                           gconf-service \
+                           git \
+                           imagemagick \
+                           lib32gcc1 \
+                           lib32stdc++6 \
+                           libarchive13 \
+                           libasound2 \
+                           libc6 \
+                           libc6-i386 \
+                           libcairo2 \
+                           libcap2 \
+                           libcups2 \
+                           libdbus-1-3 \
+                           libexpat1 \
+                           libfontconfig1 \
+                           libfreetype6 \
+                           libgcc1 \
+                           libgconf-2-4 \
+                           libgdk-pixbuf2.0-0 \
+                           libgl1-mesa-glx \
+                           libglib2.0-0 \
+                           libglu1-mesa \
+                           libgtk2.0-0 \
+                           libnspr4 \
+                           libnss3 \
+                           libpango1.0-0 \
+                           libpng-dev \
+                           libpq5 \
+                           libsoup2.4-1 \
+                           libstdc++6 \
+                           libx11-6 \
+                           libxcomposite1 \
+                           libxcursor1 \
+                           libxdamage1 \
+                           libxext6 \
+                           libxfixes3 \
+                           libxi6 \
+                           libxrandr2 \
+                           libxrender1 \
+                           libxtst6 \
+                           lsb-release \
+                           npm \
+                           python-pip \
+                           python3-pip \
+                           python3-venv \
+                           xdg-utils \
+                           xvfb \
+                           zlib1g \
+ && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /root/.cache/unity3d && mkdir -p /root/.local/share/unity3d/Unity && mkdir -p /root/.local/share/unity3d/Certificates
 ADD get-unity.sh /app/get-unity.sh
