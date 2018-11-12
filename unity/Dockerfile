@@ -2,7 +2,7 @@ FROM ubuntu:bionic
 
 # add our user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
 RUN groupadd -r unity \
- && useradd -r -g unity -ms /bin/bash unity
+ && useradd -r -g unity -u 1001 -ms /bin/bash unity
 
 # install curl to allow downloading Unity before all the dependencies
 RUN set -ex; \
@@ -75,11 +75,14 @@ RUN set -ex; \
                            ; \
     rm -rf /var/lib/apt/lists/*
 
-# create this directory for unity user before changing user
+# create this directory for user before changing user
 RUN mkdir -p /opt/Unity \
  && chown -R unity:unity /opt/Unity
 
-# Change to unity user
+# add user to audio group
+RUN usermod -a -G audio unity
+
+# Change to user
 USER unity
 WORKDIR /home/unity
 
@@ -90,4 +93,6 @@ RUN set -ex; \
  && /app/get-unity.sh
 
 # add Unity to PATH
-ENV PATH="/opt/Unity/Editor/:${PATH}"
+ENV PATH="~/bin/:${PATH}"
+RUN mkdir /home/unity/bin \
+ && ln -s /opt/Unity/Editor/Unity /home/unity/bin/unity
