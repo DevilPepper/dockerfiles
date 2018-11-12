@@ -1,7 +1,27 @@
-FROM ubuntu
-RUN apt-get -qq update \
- && apt-get -qq install -y curl \
-                           debconf \
+FROM ubuntu:bionic
+
+# add our user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
+RUN groupadd -r unity \
+ && useradd -r -g unity -ms /bin/bash unity
+
+# install curl to allow downloading Unity before all the dependencies
+RUN set -ex; \
+    apt-get update; \
+    apt-get install -y curl; \
+    apt-get clean; \
+    rm -rf /var/lib/apt/lists/*
+
+# Download Unity
+RUN set -ex; \
+    mkdir /app; \
+    curl -o /app/unity_setup -s https://beta.unity3d.com/download/48afb4a72b1a/UnitySetup-2018.2.1f1 \
+ && chmod +x /app/unity_setup \
+ && chown -R unity:unity /app
+
+# install dependencies
+RUN set -ex; \
+    apt-get -qq update; \
+    apt-get -qq install -y debconf \
                            gconf-service \
                            git \
                            imagemagick \
@@ -25,6 +45,7 @@ RUN apt-get -qq update \
                            libglib2.0-0 \
                            libglu1-mesa \
                            libgtk2.0-0 \
+                           libgtk-3-0 \
                            libnspr4 \
                            libnss3 \
                            libpango1.0-0 \
@@ -47,18 +68,26 @@ RUN apt-get -qq update \
                            python-pip \
                            python3-pip \
                            python3-venv \
+                           stow \
                            xdg-utils \
                            xvfb \
                            zlib1g \
- && rm -rf /var/lib/apt/lists/*
+                           ; \
+    rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p /root/.cache/unity3d && mkdir -p /root/.local/share/unity3d/Unity && mkdir -p /root/.local/share/unity3d/Certificates
-ADD get-unity.sh /app/get-unity.sh
-ADD run-unity.sh /app/run-unity.sh
-ADD 5/Unity_v5.x.ulf /root/.local/share/unity3d/Unity/Unity_v5.x.ulf
-ADD 2017/Unity_lic.ulf /root/.local/share/unity3d/Unity/Unity_lic.ulf
-ADD CACerts.pem /root/.local/share/unity3d/Certificates/CACerts.pem
-RUN chmod +x /app/get-unity.sh && \
-    chmod +x /app/run-unity.sh
-RUN /app/get-unity.sh
-ENV PATH="/app:${PATH}"
+# create this directory for unity user before changing user
+RUN mkdir -p /opt/Unity \
+ && chown -R unity:unity /opt/Unity
+
+# Change to unity user
+USER unity
+WORKDIR /home/unity
+
+# install Unity
+COPY --chown=unity get-unity.sh /app/get-unity.sh
+RUN set -ex; \
+    chmod +x /app/get-unity.sh \
+ && /app/get-unity.sh
+
+# add Unity to PATH
+ENV PATH="/opt/Unity/Editor/:${PATH}"
