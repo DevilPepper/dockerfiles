@@ -1,0 +1,15 @@
+#!/bin/bash
+
+dotnet new sln
+dotnet new mgdesktopgl -o $1
+dotnet sln add $1/$1.csproj
+
+mkdir $1.Tests
+cd $1.Tests
+dotnet new nunit
+dotnet add reference ../$1/$1.csproj
+cd ..
+dotnet sln add $1.Tests/$1.Tests.csproj
+
+echo "edit $1/$1.csproj and $1.Tests/$1.Tests.csproj"
+echo "https://www.reddit.com/r/monogame/comments/cst49i/the_ultimate_guide_to_getting_started_with/"
