@@ -1,0 +1,14 @@
+{
+  "files.eol": "\n",
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true,
+  "workbench.editor.highlightModifiedTabs": true,
+  "files.trimFinalNewlines": true,
+  "files.trimTrailingWhitespace": true,
+  "diffEditor.ignoreTrimWhitespace": true,
+  "files.insertFinalNewline": true,
+  // "editor.tabSize": 2,
+  "editor.detectIndentation": false,
+  "editor.insertSpaces": true,
+  "editor.autoIndent": "none",
+}
