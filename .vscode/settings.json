@@ -6,6 +6,9 @@
   "files.trimFinalNewlines": true,
   "files.trimTrailingWhitespace": true,
   "diffEditor.ignoreTrimWhitespace": true,
+  "files.exclude": {
+    ".vscode": true
+  },
   "files.insertFinalNewline": true,
   // "editor.tabSize": 2,
   "editor.detectIndentation": false,

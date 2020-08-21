@@ -3,13 +3,7 @@ FROM mcr.microsoft.com/dotnet/core/sdk:3.1
 
 ARG USERNAME=mono
 
-RUN useradd $USERNAME -s /bin/bash \
- && mkdir -p /home/$USERNAME/.vscode-server/extensions \
-        /home/$USERNAME/.vscode-server-insiders/extensions \
- && chown -R $USERNAME \
-        /home/$USERNAME/workspace \
-        /home/$USERNAME/.vscode-server \
-        /home/$USERNAME/.vscode-server-insiders
+RUN useradd $USERNAME -ms /bin/bash
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -43,10 +37,13 @@ RUN apt-key adv \
  && rm -rf /var/lib/apt/lists/*
 ENV DEBIAN_FRONTEND=dialog
 
-COPY dependencies.sh /bin/dependencies.sh
-COPY entrypoint.sh /bin/entrypoint.sh
+# TODO: Stricter permissions
 COPY mono_init /bin/mono_init
-RUN chmod +x /bin/dependencies.sh
-RUN chmod +x /bin/entrypoint.sh
-RUN chmod +x /bin/mono_init
-ENTRYPOINT ["/bin/entrypoint.sh"]
+RUN chmod +x /bin/mono_init \
+ && echo export PATH="\$PATH:\$HOME/.dotnet/tools" >> /etc/bash.bashrc
+
+USER $USERNAME
+RUN dotnet new -i NUnit3.DotNetNew.Template \
+ && dotnet new -i MonoGame.Templates.CSharp \
+ && dotnet tool install --global dotnet-mgcb
+USER root

@@ -1,15 +1,23 @@
-#!/bin/bash
+#!/bin/sh
+
+if [ $# -eq 0 ]
+  then
+    PROJ=$(basename $(pwd))
+  else
+    PROJ=$1
+fi
+
 
 dotnet new sln
-dotnet new mgdesktopgl -o $1
-dotnet sln add $1/$1.csproj
+dotnet new mgdesktopgl -o $PROJ
+dotnet sln add $PROJ/$PROJ.csproj
 
-mkdir $1.Tests
-cd $1.Tests
+mkdir $PROJ.Tests
+cd $PROJ.Tests
 dotnet new nunit
-dotnet add reference ../$1/$1.csproj
+dotnet add reference ../$PROJ/$PROJ.csproj
 cd ..
-dotnet sln add $1.Tests/$1.Tests.csproj
+dotnet sln add $PROJ.Tests/$PROJ.Tests.csproj
 
-echo "edit $1/$1.csproj and $1.Tests/$1.Tests.csproj"
+echo "Inspired by this reddit post:"
 echo "https://www.reddit.com/r/monogame/comments/cst49i/the_ultimate_guide_to_getting_started_with/"
