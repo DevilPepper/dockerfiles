@@ -1,4 +1,4 @@
-from hashicorp/packer:1.6.1
+from hashicorp/packer:1.6.2
 
 ARG USERNAME=packer
 
