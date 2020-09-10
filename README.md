@@ -2,7 +2,7 @@
 
 ## The CI
 
-- On PRs, _Dockerfile.test_ is built for changed images. (_Dockerfile.test_ must exist for each _Dockerfile_)
+- On PRs, test stage is built for changed images. (test stage must exist for each _Dockerfile_)
 - On merge, the `merge` tag is updated
 - On push tags `merge` or `release`, changed each _Dockerfile_ is built and pushed
   - Push tag `release` to trigger the workflow manually

@@ -1,4 +1,4 @@
-from node:14-alpine3.12
+FROM node:14-alpine3.12 as build
 
 RUN apk update \
  && apk add -u --no-cache \
@@ -8,4 +8,12 @@ RUN apk update \
             jq \
             less \
             openssh-client \
-            vim \
+            vim
+
+FROM build as test
+
+RUN set -ex
+RUN id -u node
+RUN node --version
+RUN git --version
+RUN jq --version
