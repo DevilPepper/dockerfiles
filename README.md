@@ -1,40 +1,46 @@
 # Dockerfiles
 
-This repo will contain all my Dockerfiles for stuff like applications and dev
-environments until there's a really good reason to separate them.
+## The CI
 
+- On PRs, _Dockerfile.test_ is built for changed images.
+- On merge, the `merge` tag is updated
+- On push tags `merge` or `release`, changed each _Dockerfile_ is built and pushed
+  - Push tag `release` to trigger the workflow manually
+- Ideally, push tag `latest` on successful docker pushes
+- Ideally, cache layers so that once PR is merged, the docker push build can just use existing layers
+  - With a 5GB limit, this may not be that desirable
 
-There are a few handy scripts in the script directory. I would clone this repo
-to the home directory and add them to the `PATH` variable like so:
+## Dockerfiles in each directory
 
-### Linux
+Each directory corresponds to a main application. Some are meant to be used with VSCode
+while others are just applications I didn't find a satisfying enough docker image for.
 
-My `.bashrc` looks for `~/.optional` and runs it if it exists:
-```bash
-echo 'PATH=$PATH:$HOME/dockerfiles/scripts/sh/' >> ~/.optional
+### Images for VSCode
+
+I typically have something like this in my _.devcontainer/Dockerfile_
+
+```dockerfile
+FROM base_img
+
+ARG USERNAME=user
+
+RUN mkdir -p \
+        /home/$USERNAME/.vscode-server/extensions \
+        /home/$USERNAME/.vscode-server-insiders/extensions \
+ && chown -R $USERNAME \
+        /home/$USERNAME/workspace \
+        /home/$USERNAME/.vscode-server \
+        /home/$USERNAME/.vscode-server-insiders
+
+COPY entrypoint.sh /bin/entrypoint.sh
+RUN chmod +x /bin/entrypoint.sh
+ENTRYPOINT ["/bin/entrypoint.sh"]
 ```
 
-### Windows
+_entrypoint.sh_ might be some hacky script that copies ssh keys and changes their permissions.
+And then I would mount whatever volumes in either the _docker-compose.yml_ or the _devcontainer.json_
 
-> TODO
+### Other applications
 
-
-## The scripts
-
-**docker-build**: Builds the `Dockerfile` and uses the directory to name the image.
-Currently, the namespace is hard coded as `supastuff`... Haven't yet figured out how
-to get the desired namespace without passing it as an argument.
-
-Optionally, you can pass an argument to give the image a tag.
-
-**docker-generate**: Generates an image named `$USER/home`. All it does is take
-a dotfiles repo and runs stow to set up the home directory for the user.
-The repo is hardcoded to use mine for now...
-
-**docker-personalize**: Assuming you have a `$USER/home` image by running
-`docker-generate`, this will build a new image from the one supplied in the
-argument and inject the home directory into it.
-
-**docker-run**: You give it `namespace/image:optionalTag` and extra arguments
-for `docker run`, and it will do `docker run` with some arguments that I think
-are frequently used. The container is removed after the session is over. (`--rm`)
+These are built with an entrypoint that uses su-exec or gosu to drop you out of root is you
+didn't specify a user.

@@ -1,5 +1,6 @@
-name: Push Changed Docker image
+name: Build and Push (on release) Changed Docker image
 on:
+  pull_request:
   push:
     tags:
       - merge
@@ -12,6 +13,7 @@ jobs:
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
       repo: ${{ steps.set-repo.outputs.repo }}
+      dockerfile: ${{ steps.set-dockerfile.outputs.dockerfile }}
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
@@ -20,12 +22,15 @@ jobs:
         run: echo "::set-output name=matrix::$matrix"
       - id: set-repo
         run: echo "::set-output name=repo::$(echo $GITHUB_REPOSITORY | tr '[:upper:]' '[:lower:]')"
+      - name: set-dockerfile
+        run: echo "set-output name=matrix::$([ $GITHUB_EVENT_NAME == 'pull_request' && echo Dockerfile.test || echo Dockerfile ])"
 
   push_to_registry:
     needs: get_changed_images
     name: Push "${{ matrix.path }}" image to GitHub Packages
     env:
       tagged_image: "${{ needs.get_changed_images.outputs.repo }}/${{ matrix.name }}"
+      dockerfile: "${{ matrix.path }}/${{ needs.get_changed_images.outputs.dockerfile }}"
       # tagged_image: "${{ needs.get_changed_images.outputs.repo }}/${{ matrix.name }}:${{ matrix.prefix }}"
     runs-on: ubuntu-latest
     strategy:
@@ -48,16 +53,16 @@ jobs:
         uses: docker/build-push-action@v1
         with:
           path: ${{ matrix.path }}
+          dockerfile: ${{ env.dockerfile }}
           repository: ${{ env.tagged_image }}
           tags: ${{ matrix.prefix }}${{ env.sha }},${{ matrix.prefix }}latest,${{ matrix.prefix }}${{ matrix.version }}
           registry: docker.pkg.github.com
           username: ${{ github.repository_owner }}
           password: ${{ github.token }}
+          push: ${{ github.event_name != 'pull_request' }}
 
           # context: ${{ matrix.path }}
           # tags: |
           # ${{ env.tagged_image }}${{ env.sha }}
           # ${{ env.tagged_image }}latest
           # ${{ env.tagged_image }}${{ matrix.version }}
-          # TODO: use a github event
-          # push: ${{ github.event_name != 'pull_request' }}
