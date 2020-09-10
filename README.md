@@ -2,11 +2,11 @@
 
 ## The CI
 
-- On PRs, _Dockerfile.test_ is built for changed images.
+- On PRs, _Dockerfile.test_ is built for changed images. (_Dockerfile.test_ must exist for each _Dockerfile_)
 - On merge, the `merge` tag is updated
 - On push tags `merge` or `release`, changed each _Dockerfile_ is built and pushed
   - Push tag `release` to trigger the workflow manually
-- Ideally, push tag `latest` on successful docker pushes
+- On docker push success, push tag `latest`
 - Ideally, cache layers so that once PR is merged, the docker push build can just use existing layers
   - With a 5GB limit, this may not be that desirable
 
