@@ -1,11 +1,10 @@
 name: Push Changed Docker image
 on:
-  create:
-    ref: [ merge, release ]
-    ref_type: tag
-  # push
-  # release:
-  #   types: [published]
+  push:
+    tags:
+      - merge
+      - release
+
 jobs:
   get_changed_images:
     name: Get changed images since latest
