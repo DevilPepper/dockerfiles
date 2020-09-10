@@ -1,0 +1,14 @@
+version: 2
+updates:
+  - package-ecosystem: "docker"
+    directory: "monogame"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "docker"
+    directory: "node"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "docker"
+    directory: "packer"
+    schedule:
+      interval: "daily"
