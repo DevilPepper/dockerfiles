@@ -30,7 +30,7 @@ jobs:
     name: Push "${{ matrix.path }}" image to GitHub Packages
     env:
       tagged_image: "${{ needs.get_changed_images.outputs.repo }}/${{ matrix.name }}"
-      dockerfile: "${{ matrix.path }}/${{ needs.get_changed_images.outputs.dockerfile }}"
+      dockerfile: "${{ needs.get_changed_images.outputs.dockerfile }}"
       # tagged_image: "${{ needs.get_changed_images.outputs.repo }}/${{ matrix.name }}:${{ matrix.prefix }}"
     runs-on: ubuntu-latest
     strategy:
@@ -66,3 +66,15 @@ jobs:
           # ${{ env.tagged_image }}${{ env.sha }}
           # ${{ env.tagged_image }}latest
           # ${{ env.tagged_image }}${{ matrix.version }}
+
+  tag_latest:
+    name: Update latest tag
+    needs: push_to_registry
+    if: ${{ github.event_name == 'push' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+      - run: |
+          git tag -f latest
+          git push --tag --force
