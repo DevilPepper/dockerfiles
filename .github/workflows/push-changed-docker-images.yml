@@ -1,6 +1,9 @@
 name: Push Changed Docker image
 on:
-  push
+  create:
+    ref: [ merge, release ]
+    ref_type: tag
+  # push
   # release:
   #   types: [published]
 jobs:
