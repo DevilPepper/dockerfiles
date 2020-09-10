@@ -1,0 +1,61 @@
+name: Push Changed Docker image
+on:
+  push
+  # release:
+  #   types: [published]
+jobs:
+  get_changed_images:
+    name: Get changed images since latest
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      repo: ${{ steps.set-repo.outputs.repo }}
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+      - run: echo "::set-env name=matrix::{'include':[$(./get_includes.sh | paste -sd ',' -)]}"
+      - id: set-matrix
+        run: echo "::set-output name=matrix::$matrix"
+      - id: set-repo
+        run: echo "::set-output name=repo::$(echo $GITHUB_REPOSITORY | tr '[:upper:]' '[:lower:]')"
+
+  push_to_registry:
+    needs: get_changed_images
+    name: Push "${{ matrix.path }}" image to GitHub Packages
+    env:
+      tagged_image: "${{ needs.get_changed_images.outputs.repo }}/${{ matrix.name }}"
+      # tagged_image: "${{ needs.get_changed_images.outputs.repo }}/${{ matrix.name }}:${{ matrix.prefix }}"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJson(needs.get_changed_images.outputs.matrix) }}
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+
+      - name: Set short sha
+        run: echo ::set-env name=sha::$(git rev-parse --short HEAD)
+
+      # - name: Login to GitHub Packages Docker Registry
+      #   uses: docker/login-action@v1
+      #   with:
+      #     registry: docker.pkg.github.com
+      #     username: ${{ github.repository_owner }}
+      #     password: ${{ github.token }}
+
+      - name: Push to GitHub Packages
+        uses: docker/build-push-action@v1
+        with:
+          path: ${{ matrix.path }}
+          repository: ${{ env.tagged_image }}
+          tags: ${{ matrix.prefix }}${{ env.sha }},${{ matrix.prefix }}latest,${{ matrix.prefix }}${{ matrix.version }}
+          registry: docker.pkg.github.com
+          username: ${{ github.repository_owner }}
+          password: ${{ github.token }}
+
+          # context: ${{ matrix.path }}
+          # tags: |
+          # ${{ env.tagged_image }}${{ env.sha }}
+          # ${{ env.tagged_image }}latest
+          # ${{ env.tagged_image }}${{ matrix.version }}
+          # TODO: use a github event
+          # push: ${{ github.event_name != 'pull_request' }}
