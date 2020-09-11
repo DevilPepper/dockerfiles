@@ -1,4 +1,4 @@
-FROM ubuntu:bionic
+FROM ubuntu:bionic as build
 
 # add our user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
 RUN groupadd -r unity \
@@ -96,3 +96,11 @@ RUN set -ex; \
 ENV PATH="~/bin/:${PATH}"
 RUN mkdir /home/unity/bin \
  && ln -s /opt/Unity/Editor/Unity /home/unity/bin/unity
+
+
+FROM ubuntu:bionic as test
+
+RUN set -ex
+# RUN id -u unity
+# RUN test -d /home/unity
+RUN echo "add tests!!"

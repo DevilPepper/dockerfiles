@@ -11,7 +11,7 @@ do
   else
     prefix=''
   fi
-  version=$(grep -v '^#' $file/Dockerfile | head -n 1 | cut -d':' -f2)
+  version=$(grep -v '^#' $file/Dockerfile | head -n 1 | cut -d':' -f2 | cut -d' ' -f1)
   jq -Mc \
      --arg path    "$file" \
      --arg name    "$name" \

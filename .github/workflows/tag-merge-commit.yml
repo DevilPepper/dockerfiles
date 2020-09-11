@@ -1,0 +1,16 @@
+name: Tag Merge Commits
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  tag_merged:
+    name: Update merged tag
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+      - run: |
+          git tag -f merged
+          git push --tag --force

@@ -1,5 +1,5 @@
 # https://lab.github.com/githubtraining/github-actions:-publish-to-github-packages
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1 as build
 
 ARG USERNAME=mono
 
@@ -32,3 +32,11 @@ RUN dotnet new -i NUnit3.DotNetNew.Template \
  && dotnet new -i MonoGame.Templates.CSharp \
  && dotnet tool install --global dotnet-mgcb
 USER root
+
+
+FROM build as test
+
+RUN set -ex
+RUN id -u mono
+RUN dotnet --version
+RUN dotnet new mgdesktopgl
