@@ -1,4 +1,4 @@
-FROM node:14-alpine3.12 as build
+FROM node:15-alpine3.12 as build
 
 RUN apk update \
  && apk add -u --no-cache \
