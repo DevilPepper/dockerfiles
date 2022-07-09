@@ -45,7 +45,7 @@ jobs:
         run: echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
       - name: Set version tag
-        run: echo "version=$(grep -v '^#' Dockerfile | head -n 1 | cut -d':' -f2 | cut -d' ' -f1)" >> $GITHUB_ENV
+        run: echo "version=$(grep -v '^#' ${{ env.image_path }}/Dockerfile | head -n 1 | cut -d':' -f2 | cut -d' ' -f1)" >> $GITHUB_ENV
 
       - name: Login to DockerHub
         uses: docker/login-action@v2.0.0
