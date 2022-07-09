@@ -16,7 +16,7 @@ Probably better off using `node:latest`, tbh...
 
 ## Use with VSCode
 
-> TODO: update with new devcontainers spec
+> TODO: update with new devcontainers spec...
 
 I typically have something like this in my _.devcontainer/_
 
