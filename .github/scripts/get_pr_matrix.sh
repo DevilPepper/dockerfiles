@@ -14,8 +14,8 @@ do
     # bc GitHub Actions can't do this...
     jq -Mc \
       --arg     image      "$image" \
-      --argjson include    "$include" \
-      '. | .image=$image | .include=$include' \
+      # --argjson include    "$include" \
+      '. | .image=$image' \ # | .include=$include' \
       <<<'{}'
   fi
 done

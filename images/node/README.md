@@ -1,6 +1,6 @@
 # NodeJS
 
-`node:alpine` with a few missing basics installed:
+`node:slim` with a few missing basics installed:
 
 - bash
 - ca-certificates
