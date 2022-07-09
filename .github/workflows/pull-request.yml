@@ -20,7 +20,7 @@ jobs:
   build_test:
     needs: get_matrix
     name: Build "${{ matrix.image }}" and test
-    if: ${{ matrix.include }}
+    if: matrix.include
     env:
       image_name: "${{ needs.get_matrix.outputs.repo }}/${{ matrix.image }}"
       image_path: "images/${{ matrix.image }}"

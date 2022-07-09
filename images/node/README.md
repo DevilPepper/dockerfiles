@@ -19,7 +19,7 @@ I typically have something like this in my _.devcontainer/_
 `Dockerfile`
 
 ```dockerfile
-FROM supastuff/node:14-alpine3.12
+FROM supastuff/node:16.13.2-bullseye-slim
 
 ARG USERNAME=node
 
