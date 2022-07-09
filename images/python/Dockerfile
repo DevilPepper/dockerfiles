@@ -33,5 +33,6 @@ USER root
 
 FROM build-poetry as test-poetry
 
+USER $USERNAME
 RUN set -ex
-RUN poetry --version
+RUN ~/.local/bin/poetry --version
