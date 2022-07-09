@@ -6,7 +6,7 @@ sha=$3
 version=$4
 
 targets=$(grep "as build-" $image_path/Dockerfile | rev | cut -d- -f1 | rev | grep -v base)
-for target in targets
+for target in $targets
 do
   echo "Building $image_name:$target"
   /usr/bin/docker buildx build $image_path --target build-$target --push \
