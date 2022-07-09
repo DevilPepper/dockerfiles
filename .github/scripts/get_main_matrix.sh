@@ -9,9 +9,13 @@ do
     include=true
   fi
 
-  jq -Mc \
-     --arg     image      "$image" \
-     --argjson include    "$include" \
-     '. | .image=$image | .include=$include' \
-    <<<'{}'
+  if $include
+  then
+    # bc GitHub Actions can't do this...
+    jq -Mc \
+      --arg     image      "$image" \
+      --argjson include    "$include" \
+      '. | .image=$image | .include=$include' \
+      <<<'{}'
+  fi
 done

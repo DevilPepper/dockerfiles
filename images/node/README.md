@@ -3,6 +3,7 @@
 `node:alpine` with a few missing basics installed:
 
 - bash
+- ca-certificates
 - curl
 - git
 - jq
