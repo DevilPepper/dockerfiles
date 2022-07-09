@@ -22,7 +22,7 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v3.0.2
       - id: set-matrix
-        run: echo "::set-output name=matrix::{'include':[$(./.github/scripts/get_main_matrix.sh | paste -sd ',' -)]}"
+        run: echo "::set-output name=matrix::{'include':[$(.github/scripts/get_main_matrix.sh | paste -sd ',' -)]}"
       - id: set-repo
         run: echo "::set-output name=repo::$(echo $GITHUB_REPOSITORY_OWNER | tr '[:upper:]' '[:lower:]')"
 
@@ -75,4 +75,4 @@ jobs:
             ghcr.io/${{ env.image_name }}:${{ env.version }}
 
       - name: Push other images
-        run: ./.github/scripts/push_images.sh ${{ env.image_path }} ${{ env.image_name }} ${{ env.sha }} ${{ env.version }}
+        run: .github/scripts/push_images.sh ${{ env.image_path }} ${{ env.image_name }} ${{ env.sha }} ${{ env.version }}
