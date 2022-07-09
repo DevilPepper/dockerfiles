@@ -2,7 +2,8 @@
 
 for image in $(ls images)
 do
-  if [ -z "$(git diff main HEAD --name-only -- images/$image)" ]
+  git fetch origin main
+  if [ -z "$(git diff FETCH_HEAD HEAD --name-only -- images/$image)" ]
   then
     include=false
   else
@@ -14,8 +15,7 @@ do
     # bc GitHub Actions can't do this...
     jq -Mc \
       --arg     image      "$image" \
-      # --argjson include    "$include" \
-      '. | .image=$image' \ # | .include=$include' \
+      '. | .image=$image' \
       <<<'{}'
   fi
 done
