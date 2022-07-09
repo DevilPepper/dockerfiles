@@ -6,6 +6,7 @@
 - ca-certificates
 - curl
 - git
+- gnupg
 - jq
 - less
 - openssh-client
