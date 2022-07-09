@@ -1,0 +1,78 @@
+name: Build and Push Docker Images
+on:
+  push:
+    branches:
+      - main
+
+env:
+  DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  get_matrix:
+    name: Get workflow matrix
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      repo: ${{ steps.set-repo.outputs.repo }}
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3.0.2
+      - id: set-matrix
+        run: echo "::set-output name=matrix::{'include':[$(./.github/scripts/get_main_matrix.sh | paste -sd ',' -)]}"
+      - id: set-repo
+        run: echo "::set-output name=repo::$(echo $GITHUB_REPOSITORY_OWNER | tr '[:upper:]' '[:lower:]')"
+
+  push_to_registry:
+    needs: get_matrix
+    name: Build "${{ matrix.image }}" and push to GitHub Packages (on release)
+    if: ${{ matrix.include }}
+    env:
+      image_name: "${{ needs.get_matrix.outputs.repo }}/${{ matrix.image }}"
+      image_path: "images/${{ matrix.image }}"
+      username: "${{ needs.get_matrix.outputs.repo }}"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJson(needs.get_matrix.outputs.matrix) }}
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3.0.2
+
+      - name: Set short sha tag
+        run: echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      - name: Set version tag
+        run: echo "version=$(grep -v '^#' Dockerfile | head -n 1 | cut -d':' -f2 | cut -d' ' -f1)" >> $GITHUB_ENV
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v2.0.0
+        with:
+          username: ${{ env.username }}
+          password: ${{ env.DOCKERHUB_TOKEN }}
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2.0.0
+        with:
+          registry: ghcr.io
+          username: ${{ env.username }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push base image
+        uses: docker/build-push-action@v3.0.0
+        with:
+          context: ${{ env.image_path }}
+          target: build-base
+          push: true
+          tags: |
+            ${{ env.image_name }}:latest
+            ${{ env.image_name }}:${{ env.sha }}
+            ${{ env.image_name }}:${{ env.version }}
+            ghcr.io/${{ env.image_name }}:latest
+            ghcr.io/${{ env.image_name }}:${{ env.sha }}
+            ghcr.io/${{ env.image_name }}:${{ env.version }}
+
+      - name: Push other images
+        run: ./.github/scripts/push_images.sh ${{ env.image_path }} ${{ env.image_name }} ${{ env.sha }} ${{ env.version }}
