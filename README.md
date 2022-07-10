@@ -2,8 +2,8 @@
 
 Because Github doesn't point to the right readme on the package page, here's a TOC:
 
-- [Node](images\node\README.md)
-- [Python](images\python\README.md)
+- [Node](images/node/README.md)
+- [Python](images/python/README.md)
 
 ## Structure
 
