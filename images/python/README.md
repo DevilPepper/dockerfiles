@@ -25,7 +25,7 @@ If you want to pin down an image, you probably want the SHA one. This probably w
 These images were made for use with VSCode, but [dev containers spec](https://github.com/devcontainers/spec/blob/main/docs/specs/devcontainerjson-reference.md) is now it's own thing.
 Here's a snippet from a _.devcontainer.json_ in one of my projects:
 
-```json
+```jsonc
 {
   "name": "${localWorkspaceFolderBasename}",
   "image": "supastuff/python:poetry",
