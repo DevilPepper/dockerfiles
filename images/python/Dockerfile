@@ -1,4 +1,5 @@
 from python:3.10.5-slim as build-base
+LABEL org.opencontainers.image.source https://github.com/SupaStuff/dockerfiles/images/python
 
 ARG USERNAME=python
 

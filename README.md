@@ -1,46 +1,35 @@
 # Dockerfiles
 
+Because Github doesn't point to the right readme on the package page, here's a TOC:
+
+- [Node](images\node\README.md)
+- [Python](images\python\README.md)
+
+## Structure
+
+- _images/_: a directory per Dockerfile
+- _legacy/_: old images pending migration
+
+Build targets are prefixed with `build-` and `test-` for publishing and (light) testing respectively.
+
+I don't have a decent testing strategy. Test targets basically try checking if relevant tools exist.
+
 ## The CI
 
-- On PRs, test stage is built for changed images. (test stage must exist for each _Dockerfile_)
-- On merge, the `merge` tag is updated
-- On push tags `merge` or `release`, changed each _Dockerfile_ is built and pushed
-  - Push tag `release` to trigger the workflow manually
-- On docker push success, push tag `latest`
-- Ideally, cache layers so that once PR is merged, the docker push build can just use existing layers
-  - With a 5GB limit, this may not be that desirable
+Only run jobs on changed images. Images are changed if anything in their directory is changed
 
-## Dockerfiles in each directory
+- On PRs, test targets are built for changed images.
+- On merge, build targets are built and pushed to Dockerhub AND GHPR
+  - Base image is tagged like:
+    - `supastuff/${image}:latest`
+    - `supastuff/${image}:${TAG_FROM_BASE_IMAGE}`
+    - `supastuff/${image}:${SHA}`
+  - Images with extras are tagged like
+    - `supastuff/${image}:${extra}`
+    - `supastuff/${image}:${extra}-${TAG_FROM_BASE_IMAGE}`
+    - `supastuff/${image}:${extra}-${SHA}`
 
-Each directory corresponds to a main application. Some are meant to be used with VSCode
-while others are just applications I didn't find a satisfying enough docker image for.
+Ideally, I would cache layers so that once PR is merged, the docker push build can just use existing layers...
+but with a 5GB limit, this may not be that desirable
 
-### Images for VSCode
-
-I typically have something like this in my _.devcontainer/Dockerfile_
-
-```dockerfile
-FROM base_img
-
-ARG USERNAME=user
-
-RUN mkdir -p \
-        /home/$USERNAME/.vscode-server/extensions \
-        /home/$USERNAME/.vscode-server-insiders/extensions \
- && chown -R $USERNAME \
-        /home/$USERNAME/workspace \
-        /home/$USERNAME/.vscode-server \
-        /home/$USERNAME/.vscode-server-insiders
-
-COPY entrypoint.sh /bin/entrypoint.sh
-RUN chmod +x /bin/entrypoint.sh
-ENTRYPOINT ["/bin/entrypoint.sh"]
-```
-
-_entrypoint.sh_ might be some hacky script that copies ssh keys and changes their permissions.
-And then I would mount whatever volumes in either the _docker-compose.yml_ or the _devcontainer.json_
-
-### Other applications
-
-These are built with an entrypoint that uses su-exec or gosu to drop you out of root is you
-didn't specify a user.
+I should probably consider using semver on image tags instead of SHA...
