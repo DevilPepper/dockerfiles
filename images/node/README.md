@@ -12,8 +12,6 @@ Basically `node:slim` with a few missing basics installed:
 - openssh-client
 - vim
 
-Probably better off using `node:latest`, tbh...
-
 ## Use with VSCode
 
 > TODO: update with new devcontainers spec...

@@ -2,7 +2,7 @@
 
 for image in $(ls images)
 do
-  git fetch origin main
+  git fetch --depth=1 origin main
   if [ -z "$(git diff FETCH_HEAD HEAD --name-only -- images/$image)" ]
   then
     include=false
