@@ -41,6 +41,26 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v3.0.2
 
+      - name: What happens with git show??
+        run: |
+          for image in $(ls images)
+          do
+            if [ -z "$(git show --first-parent --name-only -- images/$image)" ]
+            then
+              include=false
+            else
+              include=true
+            fi
+
+            echo "$images changed: $include"
+
+            if $include
+            then
+              echo "Putting it in the list!"
+            fi
+          done
+          exit 1
+
       - name: Set short sha tag
         run: echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
