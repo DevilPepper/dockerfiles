@@ -21,31 +21,8 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3.0.2
-        - fetch-depth: 2
-
-      - name: What happens with git show??
-        run: |
-          for image in $(ls images)
-          do
-            if [ -z "$(git show --first-parent --name-only -- images/$image)" ]
-            then
-              include=false
-            else
-              include=true
-            fi
-
-            set -x
-            git show --first-parent --name-only -- images/$image
-            set +x
-
-            echo "$image changed: $include"
-            if $include
-            then
-              echo "Putting it in the list!"
-            fi
-          done
-          exit 1
-
+        with:
+          fetch-depth: 2
       - id: set-matrix
         run: echo "::set-output name=matrix::{'include':[$(.github/scripts/get_main_matrix.sh | paste -sd ',' -)]}"
       - id: set-repo
