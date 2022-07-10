@@ -9,8 +9,11 @@ do
     include=true
   fi
 
+  echo "$images changed: $include"
+
   if $include
   then
+    echo "Putting it in the list!"
     # bc GitHub Actions can't do this...
     jq -Mc \
       --arg     image      "$image" \
