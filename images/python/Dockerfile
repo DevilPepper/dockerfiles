@@ -1,4 +1,4 @@
-from python:3.10.5-slim as build-base
+from python:3.10.6-slim as build-base
 LABEL org.opencontainers.image.source https://github.com/SupaStuff/dockerfiles/images/python
 
 ARG USERNAME=python
@@ -10,6 +10,7 @@ RUN apt-get update \
                     git \
                     gnupg \
                     less \
+                    make \
                     ssh-client \
                     vim \
  && rm -rf /var/lib/apt/lists/*
