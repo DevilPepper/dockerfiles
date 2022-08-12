@@ -1,4 +1,4 @@
-FROM node:16.13.2-bullseye-slim as build-base
+FROM node:18.7.0-slim as build-base
 LABEL org.opencontainers.image.source https://github.com/SupaStuff/dockerfiles/images/node
 
 ARG USERNAME=vscode
